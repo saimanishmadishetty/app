@@ -1,297 +1,136 @@
-"""
-This is a large Python file intended to exceed 50KB in size.
-It contains numerous functions, classes, and docstrings to achieve the desired file size.
-"""
+import streamlit as st
+import numpy as np
+from PIL import Image
+from vipas import model
+from vipas.exceptions import UnauthorizedException, NotFoundException, RateLimitExceededException
+import json
 
-import random
-import string
+# Function to load and preprocess the image
+def preprocess_image(image):
+    # Resize the image to 32x32 pixels using LANCZOS resampling
+    image = image.resize((32, 32), Image.Resampling.LANCZOS)
+    
+    # Convert the image to grayscale
+    image = image.convert('L')
+    
+    # Convert the image to a numpy array
+    img_array = np.array(image)
+    
+    # Initialize an 8x8 matrix to hold the counts of "on" pixels
+    blocks = img_array.reshape(8, 4, 8, 4).sum(axis=(1, 3))
+    
+    # Normalize counts to fit in the range 0 to 16
+    blocks = (blocks / blocks.max() * 16).astype(int)
+    
+    return blocks.reshape(1, -1)
 
+# Set the title and description
+st.title("🖼️ Handwritten Digit Recognition")
+st.markdown("""
+    Upload an image and let the model identify it.
+    This model can identify the digit .
+""")
 
-class LargeClass:
-    """
-    A large class with many methods and docstrings.
-    """
+# File uploader for image upload
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-    def method_1(self):
-        """
-        Method 1 does something.
-        """
-        pass
+if uploaded_file is not None:
+    # Load and preprocess the image
+    image = Image.open(uploaded_file)
+    image_features = preprocess_image(image)
 
-    def method_2(self):
-        """
-        Method 2 does something else.
-        """
-        pass
+    # Convert numpy int64 to python int
+    image_features = image_features.astype(int).tolist()
+    # Display the uploaded image
+    st.image(image, caption='Uploaded Image', use_column_width=True)
 
-    def method_3(self):
-        """
-        Method 3 does yet another thing.
-        """
-        pass
+    # Add a button to trigger the classification
+    if st.button('🔍 Classify Image'):
+        vps_model_client = model.ModelClient()
+        model_id = "mdl-svxabb9ffpvhx"  # Replace with your model ID
 
-    def method_4(self):
-        """
-        Method 4 does something completely different.
-        """
-        pass
+        try:
+            api_response = vps_model_client.predict(model_id=model_id, input_data=image_features[0])
+            prediction = api_response  # Adjust based on actual response structure
+            st.markdown(f"""
+                <div style="padding: 1rem; border: 2px solid #4CAF50; border-radius: 10px; background-color: #e7f4e4; color: #2b542c; font-size: 1.5rem; text-align: center; font-weight: bold;">
+                    Image classified as: {prediction}
+                </div>
+            """, unsafe_allow_html=True)
+        except UnauthorizedException as e:
+            st.error(f"Unauthorized exception: {str(e)}")
+        except NotFoundException as e:
+            st.error(f"Not found exception: {str(e)}")
+        except RateLimitExceededException:
+            st.error("Rate limit exceeded exception")
+        except Exception as e:
+            st.error(f"Exception when calling model->predict: {str(e)}")
 
-    def method_5(self):
-        """
-        Method 5 does something unexpected.
-        """
-        pass
-
-
-def large_function_1():
-    """
-    Large function 1 with a detailed docstring.
-    """
-    for i in range(1000):
-        _ = i ** 2
-
-
-def large_function_2():
-    """
-    Large function 2 with a detailed docstring.
-    """
-    for i in range(1000):
-        _ = i ** 3
-
-
-def generate_random_string(length=1000):
-    """
-    Generates a random string of the specified length.
-    """
-    letters = string.ascii_letters
-    return ''.join(random.choice(letters) for i in range(length))
-
-
-def large_function_3():
-    """
-    Large function 3 generates random strings.
-    """
-    for i in range(1000):
-        _ = generate_random_string()
-
-
-def large_function_4():
-    """
-    Large function 4 with repetitive tasks.
-    """
-    for i in range(1000):
-        _ = i * i
-
-
-def large_function_5():
-    """
-    Large function 5 does complex computations.
-    """
-    for i in range(1000):
-        _ = i ** 2 + i ** 3 - i ** 4
-
-
-def large_function_6():
-    """
-    Large function 6 with another repetitive task.
-    """
-    for i in range(1000):
-        _ = i + i
-
-
-def large_function_7():
-    """
-    Large function 7 simulates data processing.
-    """
-    for i in range(1000):
-        data = generate_random_string()
-        _ = data[::-1]
-
-
-def large_function_8():
-    """
-    Large function 8 simulates a logging operation.
-    """
-    for i in range(1000):
-        _ = i * 2
-
-
-def large_function_9():
-    """
-    Large function 9 performs string manipulations.
-    """
-    for i in range(1000):
-        text = generate_random_string()
-        _ = text.upper()
-
-
-def large_function_10():
-    """
-    Large function 10 does mathematical operations.
-    """
-    for i in range(1000):
-        _ = (i + 1) * (i + 2) / (i + 3)
-
-
-# More classes and functions to further increase the file size
-
-class AnotherLargeClass:
-    """
-    Another large class with many methods and docstrings.
-    """
-
-    def method_6(self):
-        """
-        Method 6 does something.
-        """
-        pass
-
-    def method_7(self):
-        """
-        Method 7 does something else.
-        """
-        pass
-
-    def method_8(self):
-        """
-        Method 8 does yet another thing.
-        """
-        pass
-
-    def method_9(self):
-        """
-        Method 9 does something completely different.
-        """
-        pass
-
-    def method_10(self):
-        """
-        Method 10 does something unexpected.
-        """
-        pass
-
-
-def even_more_large_functions():
-    """
-    Generates even more large functions.
-    """
-    for i in range(1000):
-        _ = i * i * i
-
-
-def large_function_11():
-    """
-    Large function 11 with more detailed tasks.
-    """
-    for i in range(1000):
-        _ = i + 1
-
-
-def large_function_12():
-    """
-    Large function 12 with additional computations.
-    """
-    for i in range(1000):
-        _ = i ** 5 + i ** 6 - i ** 7
-
-
-def large_function_13():
-    """
-    Large function 13 with more repetitive tasks.
-    """
-    for i in range(1000):
-        _ = i - i
-
-
-def large_function_14():
-    """
-    Large function 14 simulates more data processing.
-    """
-    for i in range(1000):
-        data = generate_random_string()
-        _ = data[::-1]
-
-
-def large_function_15():
-    """
-    Large function 15 simulates more logging operations.
-    """
-    for i in range(1000):
-        _ = i * 3
-
-
-def large_function_16():
-    """
-    Large function 16 performs more string manipulations.
-    """
-    for i in range(1000):
-        text = generate_random_string()
-        _ = text.lower()
-
-
-def large_function_17():
-    """
-    Large function 17 does more mathematical operations.
-    """
-    for i in range(1000):
-        _ = (i + 4) * (i + 5) / (i + 6)
-
-
-def large_function_18():
-    """
-    Large function 18 with even more detailed tasks.
-    """
-    for i in range(1000):
-        _ = i * 2
-
-
-def large_function_19():
-    """
-    Large function 19 with additional detailed tasks.
-    """
-    for i in range(1000):
-        _ = i / 2
-
-
-def large_function_20():
-    """
-    Large function 20 with the most detailed tasks.
-    """
-    for i in range(1000):
-        _ = i - 1
-
-
-# Add more content to ensure the file exceeds 50KB
-additional_content = """
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel urna at nisl eleifend gravida.
-Etiam vitae neque sed est lobortis vehicula at id leo. Suspendisse potenti. Fusce tincidunt magna
-nec magna dignissim vestibulum. Nullam ut ipsum nec turpis convallis vestibulum et a felis.
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-Donec sagittis malesuada nibh, nec congue lacus gravida id. Curabitur a magna in ante tempor
-commodo. Cras pharetra urna quis mi lacinia, vel cursus libero convallis. Nam vestibulum ultricies
-magna, sed pellentesque purus venenatis a. In ac nulla tincidunt, laoreet libero sit amet,
-tincidunt nulla. Donec eget fringilla dui. Pellentesque fringilla leo ut lacus ultricies,
-at volutpat purus ultricies. In hac habitasse platea dictumst. Maecenas faucibus eros at eros
-vulputate, ut ultricies odio tempus. Duis varius orci quis elit aliquam, sit amet tincidunt lorem
-bibendum. Pellentesque eget varius ligula. Fusce pretium diam id nibh condimentum, at aliquam odio
-convallis. Donec ut odio erat. Nullam vestibulum, metus vitae suscipit gravida, urna metus
-facilisis metus, ut lacinia nisi sem id nunc. Nulla et ligula eget nulla interdum tincidunt.
-Fusce ut arcu eget nulla malesuada viverra. Nulla fringilla, justo ac elementum vestibulum,
-ligula eros viverra purus, id bibendum elit lacus id orci. Suspendisse rutrum mauris purus, non
-gravida arcu fermentum ut. Donec tempus luctus fermentum. Vestibulum egestas, nisi at gravida
-volutpat, tortor est eleifend eros, nec sollicitudin risus nisi ut sem. In semper pretium orci
-at condimentum. Aenean sagittis, felis eget fringilla sodales, tortor arcu fermentum odio, non
-cursus turpis leo in odio. Sed non nisi vel velit ullamcorper dapibus. Nullam in arcu sed velit
-bibendum tempor. Sed ac risus tincidunt, bibendum dolor nec, blandit odio. Nulla facilisi. Etiam
-nec massa vel arcu tincidunt vestibulum. In dignissim ipsum vel est euismod, vel tincidunt nulla
-vehicula. Donec scelerisque ex et nisi dapibus, quis ultricies libero tempus. Quisque volutpat
-leo turpis, ut vestibulum sapien posuere nec. Fusce luctus mauris ac ex fermentum, ac bibendum
-metus suscipit. Suspendisse potenti. Curabitur quis dictum leo. Curabitur facilisis efficitur
-facilisis. Proin aliquet felis ut velit congue cursus. Aenean faucibus tincidunt purus. Cras
-elementum nisi in congue vulputate. Etiam quis ante vehicula, facilisis nisi nec, feugiat dui.
-Curabitur viverra nunc at sem consectetur rutrum. Proin bibendum quam non felis ultricies, eget
-vulputate risus porttitor. Nulla facilisi. Vivamus fringilla dolor at justo luctus viverra.
-"""
-
-with open("additional_content.txt", "w") as file:
-    file.write(additional_content * 1000)  # Writing the additional content multiple times to ensure file size
+# Add some styling with Streamlit's Markdown
+st.markdown("""
+    <style>
+        .stApp {
+            background-color: #f0f2f6;
+            padding: 0;
+        }
+        .stApp > header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .stApp > main {
+            margin-top: 4rem;
+            padding: 2rem;
+        }
+        .stTitle {
+            color: #4CAF50;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .stMarkdown {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .stFileUploader label {
+            font-size: 1.1rem;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+        .stButton button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 24px;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+        }
+        .stButton button:hover {
+            background-color: #45a049;
+        }
+        .css-1cpxqw2.e1ewe7hr3 {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .stAlert {
+            border: 1px solid #4CAF50;
+            border-radius: 10px;
+            background-color: #e7f4e4;
+            color: #2b542c;
+            font-size: 1.1rem;
+            padding: 1rem;
+        }
+        .stAlert .stMarkdown {
+            margin: 0;
+        }
+    </style>
+""", unsafe_allow_html=True)
