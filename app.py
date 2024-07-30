@@ -268,3 +268,41 @@ def large_function_20():
     """
     for i in range(1000):
         print(f"Line {i}: This is large function 20 with many lines of code.")
+
+
+# Add more content to ensure the file exceeds 50KB
+additional_content = """
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel urna at nisl eleifend gravida.
+Etiam vitae neque sed est lobortis vehicula at id leo. Suspendisse potenti. Fusce tincidunt magna
+nec magna dignissim vestibulum. Nullam ut ipsum nec turpis convallis vestibulum et a felis.
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+Donec sagittis malesuada nibh, nec congue lacus gravida id. Curabitur a magna in ante tempor
+commodo. Cras pharetra urna quis mi lacinia, vel cursus libero convallis. Nam vestibulum ultricies
+magna, sed pellentesque purus venenatis a. In ac nulla tincidunt, laoreet libero sit amet,
+tincidunt nulla. Donec eget fringilla dui. Pellentesque fringilla leo ut lacus ultricies,
+at volutpat purus ultricies. In hac habitasse platea dictumst. Maecenas faucibus eros at eros
+vulputate, ut ultricies odio tempus. Duis varius orci quis elit aliquam, sit amet tincidunt lorem
+bibendum. Pellentesque eget varius ligula. Fusce pretium diam id nibh condimentum, at aliquam odio
+convallis. Donec ut odio erat. Nullam vestibulum, metus vitae suscipit gravida, urna metus
+facilisis metus, ut lacinia nisi sem id nunc. Nulla et ligula eget nulla interdum tincidunt.
+Fusce ut arcu eget nulla malesuada viverra. Nulla fringilla, justo ac elementum vestibulum,
+ligula eros viverra purus, id bibendum elit lacus id orci. Suspendisse rutrum mauris purus, non
+gravida arcu fermentum ut. Donec tempus luctus fermentum. Vestibulum egestas, nisi at gravida
+volutpat, tortor est eleifend eros, nec sollicitudin risus nisi ut sem. In semper pretium orci
+at condimentum. Aenean sagittis, felis eget fringilla sodales, tortor arcu fermentum odio, non
+cursus turpis leo in odio. Sed non nisi vel velit ullamcorper dapibus. Nullam in arcu sed velit
+bibendum tempor. Sed ac risus tincidunt, bibendum dolor nec, blandit odio. Nulla facilisi. Etiam
+nec massa vel arcu tincidunt vestibulum. In dignissim ipsum vel est euismod, vel tincidunt nulla
+vehicula. Donec scelerisque ex et nisi dapibus, quis ultricies libero tempus. Quisque volutpat
+leo turpis, ut vestibulum sapien posuere nec. Fusce luctus mauris ac ex fermentum, ac bibendum
+metus suscipit. Suspendisse potenti. Curabitur quis dictum leo. Curabitur facilisis efficitur
+facilisis. Proin aliquet felis ut velit congue cursus. Aenean faucibus tincidunt purus. Cras
+elementum nisi in congue vulputate. Etiam quis ante vehicula, facilisis nisi nec, feugiat dui.
+Curabitur viverra nunc at sem consectetur rutrum. Proin bibendum quam non felis ultricies, eget
+vulputate risus porttitor. Nulla facilisi. Vivamus fringilla dolor at justo luctus viverra.
+"""
+
+with open("additional_content.txt", "w") as file:
+    file.write(additional_content * 1000)  # Writing the additional content multiple times to ensure file size
+
+print("Large Python file generated.")
